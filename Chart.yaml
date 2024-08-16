@@ -1,0 +1,9 @@
+apiVersion: v2
+name: backstage-helm-chart
+description: A Helm chart to deploy Backstage with custom configurations
+version: 0.1.0
+appVersion: "1.0.0"
+dependencies:
+  - name: backstage
+    version: "0.2.0"
+    repository: "https://charts.backstage.io"

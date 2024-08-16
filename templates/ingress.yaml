@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "backstage-helm-chart.name" . }}
+  labels:
+    {{- include "backstage-helm-chart.labels" . | nindent 4 }}
+  annotations:
+    kubernetes.io/ingress.class: nginx
+spec:
+  rules:
+    {{- range .Values.ingress.hosts }}
+    - host: {{ .host }}
+      http:
+        paths:
+          {{- range .paths }}
+          - path: {{ . }}
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "backstage-helm-chart.name" $root }}
+                port:
+                  number: {{ $.Values.service.port }}
+          {{- end }}
+    {{- end }}

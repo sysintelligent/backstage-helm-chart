@@ -1,0 +1,36 @@
+backstage:
+  extraEnvVars:
+    - name: GITHUB_TOKEN
+      valueFrom:
+        secretKeyRef:
+          name: backstage-secrets
+          key: GITHUB_TOKEN
+    - name: POSTGRES_USER
+      valueFrom:
+        secretKeyRef:
+          name: postgres-secrets
+          key: POSTGRES_USER
+    - name: POSTGRES_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: postgres-secrets
+          key: POSTGRES_PASSWORD
+
+  database:
+    type: postgres
+    connection:
+      host: postgres
+      user: POSTGRES_USER
+      password: POSTGRES_PASSWORD
+      database: backstage
+
+ingress:
+  enabled: true
+  hosts:
+    - host: backstage.example.com
+      paths:
+        - /
+
+service:
+  type: ClusterIP
+  port: 80

@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "backstage-helm-chart.name" . }}
+  labels:
+    {{- include "backstage-helm-chart.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "backstage-helm-chart.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "backstage-helm-chart.name" . }}
+    spec:
+      containers:
+        - name: backstage
+          image: "{{ .Values.backstage.image.repository }}:{{ .Values.backstage.image.tag }}"
+          ports:
+            - containerPort: 80
+          env:
+            {{- with .Values.backstage.extraEnvVars }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/backstage
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ include "backstage-helm-chart.name" . }}-config
